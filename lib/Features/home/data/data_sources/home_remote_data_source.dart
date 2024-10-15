@@ -1,7 +1,10 @@
 import 'package:bookly/Features/home/data/models/book_model/Book_model.dart';
 import 'package:bookly/Features/home/domain/entities/book_entity.dart';
+import 'package:bookly/constants.dart';
 import 'package:bookly/core/api/api_consumer.dart';
 import 'package:bookly/core/api/end_point.dart';
+import 'package:bookly/core/api/function.dart';
+import 'package:hive/hive.dart';
 
 abstract class HomeRemoteDataSource {
   Future<List<BookEntity>> fetchFeatureBooks();
@@ -18,6 +21,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
 
     List<BookEntity> books = getBookList(data);
 
+    saveBoxData(books, kFeatureBox);
     return books;
   }
 
