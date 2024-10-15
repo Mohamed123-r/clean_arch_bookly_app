@@ -4,7 +4,7 @@ import 'package:bookly/constants.dart';
 import 'package:bookly/core/api/api_consumer.dart';
 import 'package:bookly/core/api/end_point.dart';
 import 'package:bookly/core/api/function.dart';
-import 'package:hive/hive.dart';
+
 
 abstract class HomeRemoteDataSource {
   Future<List<BookEntity>> fetchFeatureBooks();
@@ -30,7 +30,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     var data = await api.get(EndPoint.newsBooks);
 
     List<BookEntity> books = getBookList(data);
-
+    saveBoxData(books, kNewestBox);
     return books;
   }
 }
