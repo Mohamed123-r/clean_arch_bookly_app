@@ -13,7 +13,9 @@ abstract class HomeRemoteDataSource {
 }
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
-  late final ApiConsumer api;
+   final ApiConsumer api;
+
+  HomeRemoteDataSourceImpl({required this.api});
 
   @override
   Future<List<BookEntity>> fetchFeatureBooks() async {
