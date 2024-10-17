@@ -9,17 +9,18 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'Features/home/domain/entities/book_entity.dart';
 import 'Features/home/domain/use_case/fetch_feature_books_use_case.dart';
 import 'core/api/function.dart';
+import 'core/database/cache/cache_helper.dart';
 
 void main() async {
   runApp(const Bookly());
   await Hive.initFlutter();
   Hive.registerAdapter(BookEntityAdapter());
-  await Hive.openBox(kFeatureBox);
-  await Hive.openBox(kNewestBox);
+  await Hive.openBox<BookEntity>(kFeatureBox);
+  await Hive.openBox<BookEntity>(kNewestBox);
   setupServiceLocator();
+  WidgetsFlutterBinding.ensureInitialized();
+  await CacheHelper().init();
 }
-
-
 
 class Bookly extends StatelessWidget {
   const Bookly({super.key});
@@ -33,7 +34,7 @@ class Bookly extends StatelessWidget {
             FetchFeatureBooksUseCase(
               homeRepo: getIt.get<HomeRepoImpl>(),
             ),
-          );
+          )..fetchFeaturedBooks();
         }),
       ],
       child: MaterialApp.router(

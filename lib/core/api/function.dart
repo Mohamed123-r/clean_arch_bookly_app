@@ -9,7 +9,7 @@ import 'package:hive/hive.dart';
 import 'dio_consumer.dart';
 
 void saveBoxData(List<BookEntity> books, String nameBox) {
-  var box = Hive.box(nameBox);
+  var box = Hive.box<BookEntity>(nameBox);
   box.addAll(books);
 }
 
