@@ -15,7 +15,7 @@ class FeaturedBooksListViewBlocBuilder extends StatelessWidget {
       builder: (context, state) {
         if (state is FeaturedBooksSuccess) {
           return FeaturedBooksListView(
-            book: state.books,
+            books: state.books,
           );
         } else if (state is FeaturedBooksFailed) {
           return Center(
