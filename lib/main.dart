@@ -9,6 +9,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'Features/home/domain/entities/book_entity.dart';
 import 'Features/home/domain/use_case/fetch_feature_books_use_case.dart';
 import 'core/api/function.dart';
+import 'core/api/simple_bloc_observer.dart';
 import 'core/database/cache/cache_helper.dart';
 
 void main() async {
@@ -18,6 +19,7 @@ void main() async {
   await Hive.openBox<BookEntity>(kFeatureBox);
   await Hive.openBox<BookEntity>(kNewestBox);
   setupServiceLocator();
+  Bloc.observer = SimpleBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
   await CacheHelper().init();
 }
