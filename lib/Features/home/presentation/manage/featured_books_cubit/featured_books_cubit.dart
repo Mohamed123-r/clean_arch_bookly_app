@@ -1,4 +1,3 @@
-
 import 'package:bookly/Features/home/domain/entities/book_entity.dart';
 import 'package:bookly/Features/home/domain/use_case/fetch_feature_books_use_case.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,10 +10,20 @@ class FeaturedBooksCubit extends Cubit<FeaturedBooksState> {
   final FetchFeatureBooksUseCase fetchFeaturedBooksUseCase;
 
   Future<void> fetchFeaturedBooks({int pageNum = 0}) async {
-    emit(FeaturedBooksLoading());
+    if (pageNum == 0) {
+      emit(FeaturedBooksLoading());
+    } else {
+      emit(FeaturedPaginationLoading());
+    }
     var result = await fetchFeaturedBooksUseCase.call(pageNum);
     result.fold(
-      (failure) => emit(FeaturedBooksFailed(error: failure.toString())),
+      (failure) {
+        if (pageNum == 0) {
+          emit(FeaturedBooksFailed(error: failure.message));
+        } else {
+          emit(FeaturedPaginationFailed(error: failure.message));
+        }
+      },
       (books) => emit(FeaturedBooksSuccess(books: books)),
     );
   }

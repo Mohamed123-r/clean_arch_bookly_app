@@ -1,6 +1,5 @@
 part of 'featured_books_cubit.dart';
 
-
 abstract class FeaturedBooksState {}
 
 class FeaturedBooksInitial extends FeaturedBooksState {}
@@ -18,3 +17,11 @@ class FeaturedBooksSuccess extends FeaturedBooksState {
 
   FeaturedBooksSuccess({required this.books});
 }
+
+class FeaturedPaginationFailed extends FeaturedBooksState {
+  final String error;
+
+  FeaturedPaginationFailed({required this.error});
+}
+
+class FeaturedPaginationLoading extends FeaturedBooksState {}
