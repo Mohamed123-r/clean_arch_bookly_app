@@ -1,60 +1,46 @@
 import 'package:dio/dio.dart';
-import 'error_model.dart';
 
-class ServerException implements Exception {
-  final ErrorModel errorModel;
+abstract class Failure {
+  final String message;
 
-  ServerException({required this.errorModel});
+  Failure(this.message);
 }
 
-void handelExceptions(DioException e) {
-  switch (e.type) {
-    case DioExceptionType.connectionTimeout:
-      throw ServerException(errorModel: ErrorModel.fromJson(e.response!.data));
-    case DioExceptionType.sendTimeout:
-      throw ServerException(errorModel: ErrorModel.fromJson(e.response!.data));
-    case DioExceptionType.receiveTimeout:
-      throw ServerException(errorModel: ErrorModel.fromJson(e.response!.data));
-    case DioExceptionType.badCertificate:
-      throw ServerException(errorModel: ErrorModel.fromJson(e.response!.data));
-    case DioExceptionType.cancel:
-      throw ServerException(errorModel: ErrorModel.fromJson(e.response!.data));
-    case DioExceptionType.connectionError:
-      throw ServerException(errorModel: ErrorModel.fromJson(e.response!.data));
-    case DioExceptionType.unknown:
-      throw ServerException(errorModel: ErrorModel.fromJson(e.response!.data));
-    case DioExceptionType.badResponse:
-      switch (e.response!.statusCode) {
-        case 400:
-          throw ServerException(
-              errorModel: ErrorModel.fromJson(e.response!.data));
-        case 401:
-          throw ServerException(
-              errorModel: ErrorModel.fromJson(e.response!.data));
-        case 403:
-          throw ServerException(
-              errorModel: ErrorModel.fromJson(e.response!.data));
-        case 404:
-          throw ServerException(
-              errorModel: ErrorModel.fromJson(e.response!.data));
-        case 409:
-          throw ServerException(
-              errorModel: ErrorModel.fromJson(e.response!.data));
-        case 422:
-          throw ServerException(
-              errorModel: ErrorModel.fromJson(e.response!.data));
-        case 500:
-          throw ServerException(
-              errorModel: ErrorModel.fromJson(e.response!.data));
-        case 503:
-          throw ServerException(
-              errorModel: ErrorModel.fromJson(e.response!.data));
+class ServerFailure extends Failure {
+  ServerFailure(super.message);
 
-        default:
-          throw ServerException(
-              errorModel: ErrorModel.fromJson(e.response!.data));
-      }
-    default:
-      throw ServerException(errorModel: ErrorModel.fromJson(e.response!.data));
+  factory ServerFailure.fromDiorError(DioError e) {
+    switch (e.type) {
+      case DioErrorType.connectionTimeout:
+        return ServerFailure('Connection timeout with api server');
+
+      case DioErrorType.sendTimeout:
+        return ServerFailure('Send timeout with ApiServer');
+      case DioErrorType.receiveTimeout:
+        return ServerFailure('Receive timeout with ApiServer');
+      case DioErrorType.badCertificate:
+        return ServerFailure('badCertificate with api server');
+      case DioErrorType.badResponse:
+        return ServerFailure.fromResponse(
+            e.response!.statusCode!, e.response!.data);
+      case DioErrorType.cancel:
+        return ServerFailure('Request to ApiServer was canceld');
+      case DioErrorType.connectionError:
+        return ServerFailure('No Internet Connection');
+      case DioErrorType.unknown:
+        return ServerFailure('Opps There was an Error, Please try again');
+    }
+  }
+
+  factory ServerFailure.fromResponse(int statusCode, dynamic response) {
+    if (statusCode == 404) {
+      return ServerFailure('Your request was not found, please try later');
+    } else if (statusCode == 500) {
+      return ServerFailure('There is a problem with server, please try later');
+    } else if (statusCode == 400 || statusCode == 401 || statusCode == 403) {
+      return ServerFailure(response['error']['message']);
+    } else {
+      return ServerFailure('There was an error , please try again');
+    }
   }
 }

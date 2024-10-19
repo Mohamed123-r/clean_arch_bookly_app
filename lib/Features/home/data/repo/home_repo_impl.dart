@@ -2,7 +2,7 @@ import 'package:bookly/Features/home/data/data_sources/home_local_data_source.da
 import 'package:bookly/Features/home/data/data_sources/home_remote_data_source.dart';
 import 'package:bookly/Features/home/domain/entities/book_entity.dart';
 import 'package:bookly/Features/home/domain/repos/home_repo.dart';
-import 'package:bookly/core/error/error_model.dart';
+
 import 'package:bookly/core/error/exceptions.dart';
 import 'package:dartz/dartz.dart';
 
@@ -15,7 +15,7 @@ class HomeRepoImpl extends HomeRepo {
       {required this.homeLocalDataSource, required this.homeRemoteDataSource});
 
   @override
-  Future<Either<ServerException, List<BookEntity>>> fetchFeatureBooks(
+  Future<Either<Failure, List<BookEntity>>> fetchFeatureBooks(
       {int pageNum = 0}) async {
     try {
       List<BookEntity> bookList;
@@ -28,13 +28,13 @@ class HomeRepoImpl extends HomeRepo {
       return right(bookList);
     } catch (e) {
       return left(
-        ServerException(errorModel: ErrorModel.fromJson(e)),
+       ServerFailure(e.toString()),
       );
     }
   }
 
   @override
-  Future<Either<ServerException, List<BookEntity>>> fetchNewestBooks() async {
+  Future<Either<Failure, List<BookEntity>>> fetchNewestBooks() async {
     try {
       List<BookEntity> bookList;
      bookList = homeLocalDataSource.fetchNewestBooks();
@@ -45,7 +45,7 @@ class HomeRepoImpl extends HomeRepo {
       return right(bookList);
     } catch (e) {
       return left(
-        ServerException(errorModel: ErrorModel.fromJson(e)),
+        ServerFailure(e.toString()),
       );
     }
   }
