@@ -1,7 +1,7 @@
 import 'package:bookly/Features/home/domain/entities/book_entity.dart';
+import 'package:bookly/core/widgets/custom_featured_books_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../manage/featured_books_cubit/featured_books_cubit.dart';
 import 'featured_list_view.dart';
 
@@ -39,9 +39,7 @@ class FeaturedBooksListViewBlocBuilder extends StatelessWidget {
             child: Text(state.error),
           );
         } else {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return CustomFeaturedBooksLoading();
         }
       },
     );
